@@ -1,20 +1,27 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
-import { Farmer } from './Farmer';
+import {
+  Model,
+  Column,
+  Table,
+  PrimaryKey,
+  AutoIncrement,
+  DataType,
+} from 'sequelize-typescript';
 
-@Entity()
-export class Client {
-  @PrimaryGeneratedColumn()
-  id!: number;
+@Table
+export class Client extends Model {
+  @PrimaryKey
+  @AutoIncrement
+  @Column(DataType.INTEGER)
+  id?: number;
 
-  @ManyToOne(() => Farmer, farmer => farmer.clients)
-  farmer!: Farmer;
+  @Column(DataType.STRING)
+  firstName?: string;
 
-  @Column()
-  email!: string;
+  @Column(DataType.STRING)
+  lastName?: string;
 
-  @Column()
-  first_name!: string;
-
-  @Column()
-  last_name!: string;
+  @Column(DataType.STRING)
+  email?: string;
 }
+
+export default Client;
