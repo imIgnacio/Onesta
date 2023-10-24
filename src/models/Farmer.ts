@@ -6,6 +6,7 @@ import {
   AutoIncrement,
   DataType,
   HasMany,
+  Unique,
 } from 'sequelize-typescript';
 import Client from './Client';
 import Harvest from './Harvest';
@@ -23,6 +24,7 @@ export class Farmer extends Model {
   @Column(DataType.STRING)
   lastName?: string;
 
+  @Unique
   @Column(DataType.STRING)
   email?: string;
 

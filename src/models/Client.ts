@@ -7,6 +7,7 @@ import {
   DataType,
   BelongsTo,
   ForeignKey,
+  Unique,
 } from 'sequelize-typescript';
 import Farmer from './Farmer';
 
@@ -23,6 +24,7 @@ export class Client extends Model {
   @Column(DataType.STRING)
   lastName?: string;
 
+  @Unique
   @Column(DataType.STRING)
   email?: string;
 
