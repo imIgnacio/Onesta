@@ -11,3 +11,14 @@ export const getClients = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+export const createClient = async (req: Request, res: Response) => {
+  try {
+    const client = await Client.create(req.body);
+
+    res.status(201).json(client);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
