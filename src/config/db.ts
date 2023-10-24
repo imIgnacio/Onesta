@@ -1,3 +1,7 @@
-import sqlite3 from 'sqlite3';
+import { Sequelize } from 'sequelize-typescript';
 
-export const db = new sqlite3.Database('mydb.sqlite');
+export const sequelize = new Sequelize({
+  database: 'mydatabase',
+  dialect: 'sqlite',
+  storage: ':memory:',
+});
