@@ -11,29 +11,25 @@ import {
 import Farmer from './Farmer';
 
 @Table
-export class Client extends Model {
+export class Harvest extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
   id?: number;
 
   @Column(DataType.STRING)
-  firstName?: string;
+  fruit?: string;
 
   @Column(DataType.STRING)
-  lastName?: string;
-
-  @Column(DataType.STRING)
-  email?: string;
+  size?: string;
 
   // Define the foreign key column
   @ForeignKey(() => Farmer)
   @Column(DataType.INTEGER)
   farmerId?: number;
 
-  // Create a relationship with the Farmer model
   @BelongsTo(() => Farmer)
-  farmer?: Farmer;
+  farmers?: Farmer;
 }
 
-export default Client;
+export default Harvest;
