@@ -17,20 +17,20 @@ export class Harvest extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  id?: number;
+  id: number;
 
   @Unique
   @Column(DataType.STRING)
-  fruit?: string;
+  fruit: string;
 
   @Column(DataType.STRING)
-  size?: string;
+  size: string;
 
   @Column(DataType.STRING)
-  name?: string;
+  name: string;
 
   @Column(DataType.STRING)
-  location?: string;
+  location: string;
 
   @Column(DataType.VIRTUAL)
   get nameLocation(): string {
@@ -71,10 +71,10 @@ export class Harvest extends Model {
   // Define the foreign key column
   @ForeignKey(() => Farmer)
   @Column(DataType.INTEGER)
-  farmerId?: number;
+  farmerId: number;
 
   @BelongsTo(() => Farmer)
-  farmers?: Farmer;
+  farmers: Farmer;
 }
 
 export default Harvest;

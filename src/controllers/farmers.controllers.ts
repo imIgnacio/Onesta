@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { Farmer } from '../models/Farmer';
-import { Harvest } from '../models/Harvest';
 
 export const getFarmers = async (req: Request, res: Response) => {
   try {
@@ -15,18 +14,7 @@ export const getFarmers = async (req: Request, res: Response) => {
 
 export const createFarmer = async (req: Request, res: Response) => {
   try {
-    const { firstName, lastName, email, harvests } = req.body;
-
-    const farmer = await Farmer.create({
-      firstName,
-      lastName,
-      email,
-      harvests,
-    });
-
-    harvests.forEach(async (harvest: Harvest) => {
-      await Harvest.create({ ...harvest, farmerId: farmer.id });
-    });
+    const farmer = await Farmer.create(req.body);
 
     res.status(201).json(farmer);
   } catch (error) {

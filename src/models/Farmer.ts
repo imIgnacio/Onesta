@@ -16,23 +16,23 @@ export class Farmer extends Model {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  id?: number;
+  id: number;
 
   @Column(DataType.STRING)
-  firstName?: string;
+  firstName: string;
 
   @Column(DataType.STRING)
-  lastName?: string;
+  lastName: string;
 
   @Unique
   @Column(DataType.STRING)
-  email?: string;
+  email: string;
 
   @HasMany(() => Client)
-  clients?: Client[];
+  clients: Client[];
 
   @HasMany(() => Harvest)
-  harvests?: Harvest[];
+  harvests: Harvest[];
 }
 
 export default Farmer;
