@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
+import csv from 'csv-parser';
 import fs from 'node:fs';
 import path from 'node:path';
-import csv from 'csv-parser';
 import { Readable } from 'node:stream';
 import Farmer from '../models/Farmer';
 import Client from '../models/Client';
@@ -12,7 +12,6 @@ export const importCSV = async (req: Request, res: Response) => {
     const filePath = path.join(__dirname, '..', '..', req.file?.path as string);
     const fileBuffer = fs.readFileSync(filePath);
 
-    console.log('fileBuffer', fileBuffer);
     const results: any[] = [];
 
     const readableStream = new Readable();
@@ -20,42 +19,51 @@ export const importCSV = async (req: Request, res: Response) => {
     readableStream.push(null);
 
     readableStream
-      .pipe(csv())
+      .pipe(csv({ separator: ';' }))
       .on('data', data => results.push(data))
-      .on('end', () => {
-        results.forEach(async row => {
-          console.log('row', row);
-          try {
-            const farmer = await Farmer.create({
-              email: row['Mail Agricultor'],
-              firstName: row['Nombre Agricultor'],
-              lastName: row['Apellido Agricultor'],
-            });
+      .on('end', async () => {
+        // Transform keys of each object in results array to match the column names of models
+        const farmersMapped = results.map(result => {
+          const {
+            'Nombre Agricultor': firstName,
+            'Apellido Agricultor': lastName,
+            'Mail Agricultor': email,
+          } = result;
+          return { firstName, lastName, email };
+        });
 
-            const client = await Client.create({
-              email: row['Mail Cliente'],
-              firstName: row['Nombre Cliente'],
-              lastName: row['Apellido Cliente'],
-            });
+        await Farmer.bulkCreate(farmersMapped, {
+          fields: ['email', 'firstName', 'lastName'],
+          updateOnDuplicate: ['email'],
+        });
 
-            // eslint-disable-next-line no-unused-vars
-            const harvest = await Harvest.create({
-              farmerId: farmer.id,
-              clientId: client.id,
-              fieldName: row['Nombre Campo'],
-              location: row['Ubicación de Campo'],
-              harvestedFruit: row['Fruta Cosechada'],
-              harvestSize: row['Tamaño Cosecha'],
-            });
+        const clientsMapped = results.map(result => {
+          const {
+            'Nombre Cliente': firstName,
+            'Apellido Cliente': lastName,
+            'Mail Cliente': email,
+          } = result;
+          return { firstName, email, lastName };
+        });
 
-            // await farmer.addClient(client);
-            // await client.addFarmer(farmer);
+        await Client.bulkCreate(clientsMapped, {
+          fields: ['email', 'firstName', 'lastName'],
+          updateOnDuplicate: ['email'],
+        });
 
-            // await farmer.addHarvest(harvest);
-            // await harvest.addClient(farmer);
-          } catch (error) {
-            console.error('Error processing CSV row:', error);
-          }
+        const harvestsMapped = results.map(result => {
+          const {
+            'Nombre Campo': name,
+            'Ubicación de Campo': location,
+            'Fruta Cosechada': fruit,
+            'Variedad Cosechada': size,
+          } = result;
+          return { fruit, size, name, location };
+        });
+
+        await Harvest.bulkCreate(harvestsMapped, {
+          fields: ['fruit', 'size', 'name', 'location'],
+          updateOnDuplicate: ['fruit', 'size', 'name', 'location'],
         });
 
         res.status(200).json({ message: 'CSV data imported successfully' });
