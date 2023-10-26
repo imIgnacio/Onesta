@@ -5,11 +5,8 @@ import {
   PrimaryKey,
   AutoIncrement,
   DataType,
-  HasMany,
   Unique,
 } from 'sequelize-typescript';
-import Client from './Client';
-import Harvest from './Harvest';
 
 @Table
 export class Farmer extends Model {
@@ -28,11 +25,13 @@ export class Farmer extends Model {
   @Column(DataType.STRING)
   email: string;
 
-  @HasMany(() => Client)
-  clients: Client[];
-
-  @HasMany(() => Harvest)
-  harvests: Harvest[];
+  static async createSafe(data: any) {
+    try {
+      return await Farmer.create(data);
+    } catch (error) {
+      console.error('Error creating farmer:', error);
+    }
+  }
 }
 
 export default Farmer;

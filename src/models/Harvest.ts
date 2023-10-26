@@ -5,12 +5,9 @@ import {
   PrimaryKey,
   AutoIncrement,
   DataType,
-  BelongsTo,
-  ForeignKey,
   Unique,
   BeforeValidate,
 } from 'sequelize-typescript';
-import Farmer from './Farmer';
 
 @Table
 export class Harvest extends Model {
@@ -67,14 +64,6 @@ export class Harvest extends Model {
       }
     });
   }
-
-  // Define the foreign key column
-  @ForeignKey(() => Farmer)
-  @Column(DataType.INTEGER)
-  farmerId: number;
-
-  @BelongsTo(() => Farmer)
-  farmers: Farmer;
 }
 
 export default Harvest;
